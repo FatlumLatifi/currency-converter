@@ -1,0 +1,2 @@
+label  { color: gold; font-size: x-large; }
+button label { color: inherit; font-size: x-small; }

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Icon=/var/lib/currency-converter/icon.png
+Exec=currency-converter
+Type=Application
+OnlyShowIn=X-Cinnamon;
+Categories=Office;
+Name=Currency Converter
+Comment=Current Exchange Rates from European Central Bank
+Keywords=currency;exchange;finance;
