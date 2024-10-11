@@ -9,7 +9,6 @@
 #endif
 
 #define GLADE_FILE ASSETS_DIR "main.glade"
-#define ICON_FILE ASSETS_DIR "icon.png"
 #define STYLE_FILE ASSETS_DIR "style.css"
 
 
@@ -36,7 +35,7 @@ static void exchange_currency(gpointer builderPtr)
 static void on_currency_changed(GtkComboBoxText* combo, gpointer data) { exchange_currency(data); }
 static void on_spin_changed(GtkSpinButton* spin, gpointer data) { exchange_currency(data); }
 static void update_rates_button_clicked(GtkButton* button, gpointer data) { update_currency_rates(); }
-static void on_window_destroyed(GtkWindow* window, gpointer data) { cleanUp();}
+static void on_window_destroyed(GtkWindow* window, gpointer data) { cleanUp(); }
 
 static void copy_result_button_clicked(GtkButton* button, gpointer data) 
 {
@@ -46,7 +45,7 @@ static void copy_result_button_clicked(GtkButton* button, gpointer data)
   gtk_clipboard_set_text(clipboard, text, -1);
 }
 
-static void activate (GtkApplication* app, gpointer data)
+static void activate(GtkApplication* app, gpointer data)
 {
   update_currency_rates();
   GtkBuilder* builder = gtk_builder_new_from_file(GLADE_FILE);
@@ -81,11 +80,11 @@ static void activate (GtkApplication* app, gpointer data)
   exchange_currency(builder);
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
   g_print(ASSETS_DIR);
   GtkApplication* app = gtk_application_new ("org.gtk.example", G_APPLICATION_DEFAULT_FLAGS);
-  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  g_signal_connect(app, "activate", G_CALLBACK (activate), NULL);
   int status = g_application_run (G_APPLICATION (app), argc, argv);
   g_object_unref (app);
   return status;

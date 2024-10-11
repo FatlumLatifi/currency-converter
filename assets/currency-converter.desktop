@@ -1,5 +1,5 @@
 [Desktop Entry]
-Icon=/var/lib/currency-converter/icon.png
+Icon=gnucash
 Exec=currency-converter
 Type=Application
 OnlyShowIn=X-Cinnamon;
