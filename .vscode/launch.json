@@ -5,13 +5,13 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/gtone",
+            "program": "${workspaceFolder}/bin/currency-converter",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}/bin",
             "environment": [],
             "externalConsole": false,
-            "preLaunchTask": "build GTK Application",
+            "preLaunchTask": "Build.SH",
             "MIMode": "gdb",
             "setupCommands": [
                 {
