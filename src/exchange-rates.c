@@ -48,11 +48,6 @@ void update_currency_rates(void)
 
 
 
-void append_currencies_from_node(GtkComboBoxText* combo1, GtkComboBoxText* combo2, xmlNode* current_node)
-{
-   
-}
-
 xmlNode* move_next_node(xmlNode* current_node)
 {
      if (current_node->children) { current_node = current_node->children; } 
@@ -94,7 +89,6 @@ double convert_euro(ConvertType type, char currencyName[3], double value)
     xmlNode* node = xmlDocGetRootElement(_docPtr);
     xmlChar* attrValue = NULL;
     double result;
-
     while (node) 
     {
         //attrValue = NULL;
@@ -122,6 +116,65 @@ double convert_euro(ConvertType type, char currencyName[3], double value)
 //xmlFree(node);
 xmlFree(attrValue);
 return result;
+}
+
+float get_conversion_rate(ConvertType type, char currencyName[3])
+{
+    xmlNode* node = xmlDocGetRootElement(_docPtr);
+    xmlChar* attrValue = NULL;
+    float result;
+    while (node) 
+    {
+        //attrValue = NULL;
+        if (node->type == XML_ELEMENT_NODE && strcmp(node->name, "Cube") == 0) 
+        {
+            attrValue = xmlGetProp(node, (const xmlChar*)"currency");
+            if (attrValue)
+            {
+                if (strcmp(attrValue, currencyName) == 0)
+                {
+                    xmlChar* rateValue = xmlGetProp(node, (const xmlChar*)"rate");
+                    if (rateValue)
+                    {
+                        result = strtof(rateValue, NULL);
+                        xmlFree(rateValue);
+                        xmlFree(attrValue);
+                        return result;
+                    }
+                }
+            }
+        }
+        node = move_next_node(node);
+    }
+//xmlFree(node);
+xmlFree(attrValue);
+return result;
+}
+
+float get_currency_exchange_rate(char currencyFrom[3], char currencyTo[3])
+{
+    if (_docPtr == NULL)
+    {
+        _docPtr = xmlReadFile(ECB_FILE, NULL, 0);
+       // root_node = xmlDocGetRootElement(doc);
+    }
+     
+    if (currencyFrom == currencyTo) { return 1.00; }
+
+    if (strcmp(currencyFrom, "EUR") == 0)
+    {
+        return get_conversion_rate(FromEUR, currencyTo);
+    }
+    else if (strcmp(currencyTo, "EUR") == 0)
+    {
+        return get_conversion_rate(ToEUR, currencyFrom);
+    }
+    else
+    {
+        float oneEuroOfFrom = get_conversion_rate(ToEUR, currencyFrom);
+        float oneEuroOfTo = get_conversion_rate(FromEUR, currencyTo);
+        return (oneEuroOfTo/oneEuroOfFrom);
+    }
 }
 
 

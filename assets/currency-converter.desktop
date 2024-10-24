@@ -2,7 +2,6 @@
 Icon=gnucash
 Exec=currency-converter
 Type=Application
-OnlyShowIn=X-Cinnamon;
 Categories=Office;
 Name=Currency Converter
 Comment=Current Exchange Rates from European Central Bank

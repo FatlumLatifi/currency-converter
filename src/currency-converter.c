@@ -12,28 +12,39 @@
 #define STYLE_FILE ASSETS_DIR "style.css"
 
 
+static float current_exchange_rate = 1.0000;
+
 static void exchange_currency(gpointer builderPtr)
 {
   GtkBuilder* builder = GTK_BUILDER(builderPtr);
   GObject* spin = gtk_builder_get_object(builder, "spinValue");
   GObject* resultLabel = gtk_builder_get_object(builder, "resultValue");
 
-  GObject* valueCombo = gtk_builder_get_object(builder, "valueCurrency");  
-  GObject* resultCombo = gtk_builder_get_object(builder, "resultCurrency");  
-  char* from = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(valueCombo));
-  char* to = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(resultCombo));
-
   double value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(spin));
-  double result = convert_currency(from, to, value);
+  double result = value*current_exchange_rate;
   int length = snprintf(NULL, 0, "%.2lf", result) + 1;
-
   char output[length];
   snprintf(output, length, "%.2lf", result);
   gtk_label_set_text(GTK_LABEL(resultLabel), output);
 }
 
-static void on_currency_changed(GtkComboBoxText* combo, gpointer data) { exchange_currency(data); }
+static void changed_currency_selection(gpointer builderPtr)
+{
+  GtkBuilder* builder = GTK_BUILDER(builderPtr);
+
+  GObject* valueCombo = gtk_builder_get_object(builder, "valueCurrency");  
+  GObject* resultCombo = gtk_builder_get_object(builder, "resultCurrency");  
+  char* from = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(valueCombo));
+  char* to = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(resultCombo));
+
+  current_exchange_rate = get_currency_exchange_rate(from, to);
+  exchange_currency(builderPtr);
+
+}
+
+static void on_currency_changed(GtkComboBoxText* combo, gpointer data) { changed_currency_selection(data); }
 static void on_spin_changed(GtkSpinButton* spin, gpointer data) { exchange_currency(data); }
+
 static void update_rates_button_clicked(GtkButton* button, gpointer data) { update_currency_rates(); }
 static void on_window_destroyed(GtkWindow* window, gpointer data) { cleanUp(); }
 
@@ -75,8 +86,8 @@ static void activate(GtkApplication* app, gpointer data)
   g_signal_connect(copyResultButton, "clicked", G_CALLBACK(copy_result_button_clicked), builder);
   g_signal_connect(windowOb, "destroy", G_CALLBACK(on_window_destroyed), NULL);
 
+  changed_currency_selection(builder);
   gtk_widget_show_all(GTK_WIDGET(windowOb));
-  
   exchange_currency(builder);
 }
 
